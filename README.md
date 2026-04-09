@@ -3,7 +3,7 @@
 
 ### Appendix C. Informative FAQ
 
-| Original topic (exact wording) | Paraphrased as a question or incorrect statement | FAQ response (based on Sergey Prokhorenko / sergeyprokhorenko) |
+| Original topic (exact wording) | Question / Misconception | Answer |
 | :--- | :--- | :--- |
 | **Monotonicity violation when generating UUIDv7 in parallel across multiple processes** | “If I generate UUIDv7 in parallel across different processes, the IDs will still be perfectly and globally ordered.” | This is a common misconception. The RFC does not guarantee monotonicity across different processes. Monotonicity is typically guaranteed only within a single process or backend. UUIDs generated in parallel workers can lose sortability and might not be ordered, especially if they have different starting states. |
 | **System clock rollback** | “If the system clock goes backwards, my UUIDv7 generator will be stuck, produce invalid IDs, or violate monotonicity.” | Most robust implementations handle a clock rollback gracefully. A common approach is to ignore the rollback and reuse the previous timestamp value until the system clock catches up. However, if the rollback is significant (e.g., >10 seconds), the generator may need to handle it as a critical error. |
