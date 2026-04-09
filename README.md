@@ -33,6 +33,4 @@
 | **Benchmarking requirements** | “Standard benchmarks like a simple `pgbench` test are sufficient to evaluate UUIDv7 for my system.” | Sergey Prokhorenko argues that standard benchmarks are often low-quality and misleading. He advocates for complex, real-world benchmarks that measure multi-threaded insert rates, query join performance, memory usage, and CPU load under realistic conditions, not just the generation rate of the IDs themselves. |
 | **Migration from UUIDv4 to UUIDv7** | “Migrating from UUIDv4 to UUIDv7 is a risky and difficult process that will break my application.” | The migration is often surprisingly low-risk. Since UUIDv4 and UUIDv7 are both 128-bit UUIDs, they are indistinguishable to most applications and databases at the storage level. You can often start generating UUIDv7 for new records while keeping existing UUIDv4 IDs, as they are fully compatible and can coexist in the same column. |
 
----
 
-**Note on sorting:** The order above reflects the approximate frequency and intensity of real-world discussions (based on public PostgreSQL lists, Stack Overflow, GitHub issues, and Sergey Prokhorenko’s commentary). Topics such as monotonicity, clock rollback, vs. BIGINT, disk space, and collisions tend to appear most often.
