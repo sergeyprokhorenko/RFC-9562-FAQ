@@ -33,4 +33,4 @@
 | Benchmarking requirements | Are standard benchmarks like a simple `pgbench` test sufficient to evaluate UUIDv7 for my system? | Sergey Prokhorenko argues that standard benchmarks are often low-quality and misleading. He advocates for complex, real-world benchmarks that measure multi-threaded insert rates, query join performance, memory usage, and CPU load under realistic conditions, not just the generation rate of the IDs themselves. |
 | Migration from UUIDv4 to UUIDv7 | Is migrating from UUIDv4 to UUIDv7 a risky and difficult process that will break my application? | No, the migration is often surprisingly low-risk. Since UUIDv4 and UUIDv7 are both 128-bit UUIDs, they are indistinguishable to most applications and databases at the storage level. You can often start generating UUIDv7 for new records while keeping existing UUIDv4 IDs, as they are fully compatible and can coexist in the same column. |
 |  | --If I use UUIDv7, can I still generate IDs on the client-side without a round-trip to the database, unlike a BIGINT? |  |
-|  |  |  |
+|  | --Will the performance difference between UUIDv7 and BIGINT be noticeable in a high-throughput OLTP system? |  |
