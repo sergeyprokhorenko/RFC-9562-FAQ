@@ -1,14 +1,6 @@
 # RFC 9562 FAQ
 
-Black humor:
-
-​- I don’t like cats!
-
-​- You just don’t know how to cook them!
-
-Same with UUIDv7: if for some reason you think they’re not for you, you just don’t know how to use them.
-
-
+If for some reason you think UUIDv7 are not for you, you just don’t know how to use them.
 
 
 ### Appendix C. Informative FAQ
