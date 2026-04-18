@@ -5,7 +5,7 @@ If for some reason you think UUIDv7 isn't for you, you just don’t know how to 
 
 ### Appendix C. Informative FAQ
 
-| Topic | Question | Answer |
+| # | Question | Answer |
 | :--- | :--- | :--- |
 |  | Will UUIDv7 values be strictly increasing (monotonic) when generated in parallel across multiple processes? | Existing implementations may guarantee monotonicity across different processes (with or without limiting throughput), only within a single process or backend (where a sub‑millisecond timestamp segment can improve monotonicity), or not at all. |
 |  | What happens if the system clock goes backwards during UUIDv7 generation? | Some implementations handle a clock rollback gracefully by ignoring the rollback and reusing the previous timestamp value until the system clock catches up. Here, monotonicity is provided by a counter and/or by incrementing the timestamp itself as a counter. |
