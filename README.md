@@ -1,6 +1,6 @@
 # RFC 9562 FAQ
 
-If for some reason you think UUIDv7 isn't for you, you just don’t know how to use it.
+RFC 9562 FAQ: Common concerns about UUIDv7, answered. If you think UUIDv7 doesn’t fit your use case, this guide might show you a new perspective.
 
 
 ### Appendix C. Informative FAQ
