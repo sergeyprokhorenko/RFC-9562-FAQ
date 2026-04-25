@@ -5,7 +5,7 @@ RFC 9562 FAQ: Common concerns about UUIDv7, answered. If you think UUIDv7 doesn�
 
 ## Appendix C. Informative FAQ
 
-### Подзаголовок
+### Choosing UUIDv7
 
 | # | Question | Answer |
 | :---: | :--- | :--- |
@@ -13,7 +13,7 @@ RFC 9562 FAQ: Common concerns about UUIDv7, answered. If you think UUIDv7 doesn�
 | 2 | When to choose UUIDv7 vs UUIDv4? | UUIDv7 is best for primary keys in tables that handle a lot of writes. Because it's time-ordered, it improves index performance and reduces page splits in databases like PostgreSQL or MySQL.<br><br>UUIDv4 should only be used when you need purely random identifiers with no sortable or time-based structure, for example, session tokens, API keys, or one-time use codes where ordering doesn't matter. |
 | 3 | Is it necessary to implement multiple UUID versions in DBMS and system libraries? | No. As a rule, implementing only UUIDv7 is sufficient for almost all new applications. UUIDv1, UUIDv2, UUIDv3, and UUIDv5 were created in 2005 without a clear understanding of real-world requirements. They exist for variety, not because each solves a distinct problem. UUIDv6 was added solely to extend the life of deployments built on UUIDv1, not as a standalone new version. UUIDv4 is kept only for legacy systems that cannot adopt an advanced implementation of UUIDv7. RFC 9562 retains all versions merely to avoid invalidating existing usage, never to recommend implementing the full set. No regulatory or procurement document requires coverage of every version. RFC 9562 treats UUIDs as opaque values, so a generator that produces all versions adds nothing for parsing or wire compatibility. All effort should go into an advanced UUIDv7 implementation.<br><br>UUIDv1 and UUIDv2 rely on MAC addresses and are considered problematic for security and privacy in modern distributed systems.<br><br>UUIDv3 uses MD5, which is cryptographically broken, so it should never be used in any new system.<br><br>UUIDv4 works well only in the rare cases where ordering is not required. UUIDv7, by contrast, works in all cases and can fully replace UUIDv4, provided a clock is available. A recommended technique supported in PostgreSQL and other systems is to apply random timestamp offsets to UUIDv7 to hide the true creation time while preserving time ordering. The lower 32 random bits of UUIDv7 can also serve as a sharding key.<br><br>UUIDv5 uses SHA-1, which is obsolete and insecure (though less broken than MD5). It lacks time ordering and index locality. Some might argue that deterministic, name-based UUIDv5 is useful, but in practice no entity is truly immutable. Email addresses, names, and even URIs can change over time. With UUIDv7, you store the external identifier (for example, an email address) in a separate column and keep a lookup table. The UUIDv7 itself never needs to change. This is why UUIDv7 can fully replace UUIDv5 for new designs.<br><br>UUIDv6 is unpopular, and its timestamp structure differs from UUIDv1, making it difficult to use UUIDv6 as a replacement for UUIDv1. Therefore UUIDv7 replaces it without any drawback.<br><br>UUIDv8 is custom, therefore it cannot be uniformly implemented across database management systems and system libraries. |
 
-### Подзаголовок
+### Storage and Performance
 
 | # | Question | Answer |
 | :---: | :--- | :--- |
@@ -22,7 +22,7 @@ RFC 9562 FAQ: Common concerns about UUIDv7, answered. If you think UUIDv7 doesn�
 | 6 | Does the time-ordered nature of UUIDv7 create a hot shard, where all new writes go to the same node, making it unsuitable for some sharded databases? | Yes, if you use the full UUIDv7 value as a sharding key, the time-ordered prefix can cause all writes to concentrate on a single shard for a given time period. This is because the most significant bits change slowly over time.<br><br>However, this problem is easily avoided: use only the 32 least significant bits (the random part) as the sharding key instead of the entire UUID. This method works for UUID versions 3, 4, 5, and 7. At the same time, choosing a more meaningful sharding key, such as a client ID, is preferable to focus related computations on the same shard. |
 | 7 | When many concurrent writers insert rows with UUIDv7 into a database, does the monotonic nature of UUIDv7 cause all new rows to land on the same page, resulting in high page-level lock contention and slower write throughput? | To avoid it, shift the timestamp of each UUIDv7 by a small offset, assign different offsets to different writers, keep the number of distinct offsets low, and avoid very small offsets. |
 
-### Подзаголовок
+### Security and Privacy
 
 | # | Question | Answer |
 | :---: | :--- | :--- |
@@ -30,7 +30,7 @@ RFC 9562 FAQ: Common concerns about UUIDv7, answered. If you think UUIDv7 doesn�
 | 9 | Some UUIDv7 implementations allow generation from a specific timestamp, while others offer a timestamp offset. Considering they might seem interchangeable, which approach is preferable and why? | Choose timestamp offset, because generation from a specific timestamp is a safety anti-pattern. Unintentional passing of an arbitrary (fixed or decreasing) timestamp to uuidv7() fundamentally breaks monotonicity, the backbone of time-based sortable UUIDs. So the result cannot be considered a valid UUIDv7 implementation. |
 | 10 | Is UUIDv7 vulnerable to brute-force enumeration attacks when using a long counter? | No. Even with a long counter (up to 42 bits), UUIDv7 remains resistant to brute-force enumeration. The counter is randomly seeded per timestamp tick, and the ID retains at least 32 bits of dedicated randomness plus the counter’s entropy. Combined with constantly changing timestamps, brute-force search is computationally infeasible for practical purposes. A CSPRNG is recommended. |
 
-### Подзаголовок
+### Design and Generation
 
 | # | Question | Answer |
 | :---: | :--- | :--- |
@@ -51,7 +51,7 @@ RFC 9562 FAQ: Common concerns about UUIDv7, answered. If you think UUIDv7 doesn�
 | 25 | Is it necessary to synchronize the system clocks of UUIDv7 generators with each other? | No, UUIDv7 generators do not need to synchronize their clocks with each other directly. Instead, each generator independently synchronizes its system clock to a global time reference (typically UTC) using standard time synchronization technologies, such as NTP (Network Time Protocol), PTP (Precision Time Protocol), or GPS-based time receivers. This ensures that all generators produce monotonically increasing timestamps without requiring peer-to-peer synchronization. |
 | 26 | Will leap seconds cause incorrect timestamps in UUIDv7 and break time ordering? | No. UUIDv7 uses Unix time (leap seconds excluded, as mandated by RFC 9562), so the timestamp is strictly monotonic and ordering remains correct. |
 
-### Подзаголовок
+### UUIDv7 in Databases
 
 | # | Question | Answer |
 | :---: | :--- | :--- |
@@ -62,7 +62,7 @@ RFC 9562 FAQ: Common concerns about UUIDv7, answered. If you think UUIDv7 doesn�
 | 31 | Are standard benchmarks like a simple pgbench test sufficient to evaluate UUIDv7 for my system? | Standard benchmarks like a simple pgbench run are not sufficient to properly evaluate UUIDv7 for your system. A more thorough, real-world assessment is recommended that measures multi-threaded insert throughput with UUIDv7 generation and, importantly, the performance of subsequent queries such as LEFT JOIN and INNER JOIN. These tests should be conducted under realistic conditions that reflect your actual environment, including hardware specifications, row count, and average row size within the table. When using pgbench, it should be configured with a custom script file that simulates these exact workloads, allowing for a meaningful comparison between UUIDv7 and its practical alternatives. |
 | 32 | Is measuring the raw generation rate of UUIDv7 a useful performance metric? | Usually, no. Generating a UUIDv7 with a fast entropy source is extremely fast compared to the time the database needs to insert or update a row. The generation step is almost never the real bottleneck. See the answer about standard benchmarks to properly evaluate UUIDv7 performance. |
 
-### Подзаголовок
+### Migration and Compatibility
 
 | # | Question | Answer |
 | :---: | :--- | :--- |
