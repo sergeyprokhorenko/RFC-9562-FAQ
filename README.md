@@ -62,7 +62,7 @@ RFC 9562 FAQ: Common concerns about UUIDv7, answered. If you think UUIDv7 doesnâ
 | 31 | Are standard benchmarks like a simple pgbench test sufficient to evaluate UUIDv7 for my system? | Standard benchmarks like a simple pgbench run are not sufficient to properly evaluate UUIDv7 for your system. A more thorough, real-world assessment is recommended that measures multi-threaded insert throughput with UUIDv7 generation and, importantly, the performance of subsequent queries such as LEFT JOIN and INNER JOIN. These tests should be conducted under realistic conditions that reflect your actual environment, including hardware specifications, row count, and average row size within the table. When using pgbench, it should be configured with a custom script file that simulates these exact workloads, allowing for a meaningful comparison between UUIDv7 and its practical alternatives. |
 | 32 | Is measuring the raw generation rate of UUIDv7 a useful performance metric? | Usually, no. Generating a UUIDv7 with a fast entropy source is extremely fast compared to the time the database needs to insert or update a row. The generation step is almost never the real bottleneck. See the answer about standard benchmarks to properly evaluate UUIDv7 performance. |
 
-### Migration and Compatibility
+### Migration to UUIDv7
 
 | # | Question | Answer |
 | :---: | :--- | :--- |
