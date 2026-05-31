@@ -1,4 +1,4 @@
-# RFC 9562 FAQ
+# UUIDv7 and RFC 9562 FAQ
 
 RFC 9562 FAQ: Common concerns about UUIDv7, answered. If you think UUIDv7 doesn't fit your use case, this guide might show you a new perspective.
 
