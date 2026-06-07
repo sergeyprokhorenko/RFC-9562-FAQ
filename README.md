@@ -1,6 +1,6 @@
 # UUIDv7 and RFC 9562 FAQ
 
-UUIDv7 and RFC 9562 FAQ: Common concerns about UUIDv7, answered. If you think UUIDv7 doesn't fit your use case, this guide might show you a new perspective.
+[UUIDv7](https://datatracker.ietf.org/doc/html/rfc9562#name-uuid-version-7) and [RFC 9562](https://datatracker.ietf.org/doc/html/rfc9562) FAQ: Common concerns about UUIDv7, answered. If you think UUIDv7 doesn't fit your use case, this guide might show you a new perspective.
 
 
 ## Appendix C. Informative FAQ
